@@ -3,8 +3,6 @@ library(shiny)
 source("../backend/savings_calculator.R")
 source("../backend/loan_calculator.R")
 
-
-# ── PIXEL ART HELPER ─────────────────────────────────────────
 pixel_art_svg <- function(rows, colors, px = 8) {
   rects <- c()
   for (r in seq_along(rows)) {
@@ -32,8 +30,6 @@ pixel_art_svg <- function(rows, colors, px = 8) {
   )
 }
 
-
-# ── PIXEL CHARACTER DEFINITIONS ──────────────────────────────
 PIXELS <- list(
   knight = list(
     rows = c(
