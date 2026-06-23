@@ -10,6 +10,7 @@ calculate_monthly_payment <- function(principal, annual_rate, years) {
     return(round (M,2))
 }
 
+build_amortization_schedule <- function(principal, annual_rate, years) {
 #create the empty vectors
 months_vec <- c()
 payment_vec <- c()
@@ -56,5 +57,8 @@ schedule <- data.frame(
   Interest = interest_vec,
   Balance = balance_vec
 )
+  
+  return(schedule)
+}
 
-print(schedule)
+
