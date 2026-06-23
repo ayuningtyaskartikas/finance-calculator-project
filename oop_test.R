@@ -77,6 +77,10 @@ d3 <- setRefClass("d3",
   )
 )
 
+cat("========================================\n")
+cat("  EXAMPLE 5a: Method Dispatch\n")
+cat("========================================\n")
+
 o3 <- d3$new()
 cat("send o3 m3():", o3$m3(), "\n")
 cat("\n→ If result = 33: DYNAMIC method dispatch\n")
