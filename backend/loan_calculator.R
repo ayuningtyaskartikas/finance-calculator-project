@@ -61,4 +61,27 @@ schedule <- data.frame(
   return(schedule)
 }
 
+print_loan_summary <- function(principal, annual_rate, years) {
+  schedule       <- build_amortization_schedule(principal, annual_rate, years)
+  monthly        <- calculate_monthly_payment(principal, annual_rate, years)
+  total_paid     <- round(sum(schedule$Payment), 2)
+  total_interest <- round(sum(schedule$Interest), 2)
+
+  cat("\n========================================\n")
+  cat("           LOAN SUMMARY\n")
+  cat("========================================\n")
+  cat(sprintf("  Loan Amount:          $%s\n",   format(principal,      big.mark = "," , scientific = FALSE)))
+  cat(sprintf("  Annual Rate:          %.2f%%\n", annual_rate))
+  cat(sprintf("  Term:                 %d years\n", years))
+  cat(sprintf("  Monthly Payment:      $%s\n",   format(monthly,        nsmall = 2, big.mark = ",")))
+  cat(sprintf("  Total Paid:           $%s\n",   format(total_paid,     nsmall = 2, big.mark = ",")))
+  cat(sprintf("  Total Interest Paid:  $%s\n",   format(total_interest, nsmall = 2, big.mark = ",")))
+  cat("========================================\n\n")
+
+  cat("--- Month-by-Month Schedule ---\n")
+  print(schedule, row.names = FALSE)
+  cat("\n")
+
+  return(invisible(schedule))
+}
 
