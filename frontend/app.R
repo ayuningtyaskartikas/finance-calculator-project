@@ -442,7 +442,7 @@ server <- function(input, output, session) {
             )
           })
         ),
-        tags$button("▶  CONFIRM CLASS", class = "btn-rpg",
+        tags$button("▶  SELECT CHARACTER", class = "btn-rpg",
           onclick = "Shiny.setInputValue('confirm_class', Math.random())")
       )
     )
@@ -478,7 +478,7 @@ server <- function(input, output, session) {
           textInput("player_name",   "// ADVENTURER NAME",    placeholder = "Enter your name..."),
           numericInput("player_wages", "// MONTHLY WAGES ($)", value = NULL, min = 0),
           uiOutput("create_error"),
-          tags$button("▶  BEGIN QUEST", class = "btn-rpg",
+          tags$button("▶  BEGIN JOURNEY", class = "btn-rpg",
             onclick = "Shiny.setInputValue('begin_quest', Math.random())")
         )
       )
