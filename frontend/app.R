@@ -1,4 +1,6 @@
 library(shiny)
+library(ggplot2)
+library(scales)
 
 source("../backend/savings_calculator.R")
 source("../backend/loan_calculator.R")
@@ -569,7 +571,8 @@ server <- function(input, output, session) {
             )),
             column(7, div(class="rpg-box",
               div(class="rpg-box-title", "> OUTPUT"),
-              verbatimTextOutput("loan_result")
+              verbatimTextOutput("loan_result"),
+              plotOutput("loan_chart", height = "260px")
             ))
           )
         ),
@@ -588,7 +591,8 @@ server <- function(input, output, session) {
             )),
             column(7, div(class="rpg-box",
               div(class="rpg-box-title", "> OUTPUT"),
-              verbatimTextOutput("savings_result")
+              verbatimTextOutput("savings_result"),
+              plotOutput("savings_chart", height = "260px")
             ))
           )
         ),
@@ -640,6 +644,30 @@ server <- function(input, output, session) {
       sprintf("  TOTAL INTEREST : $%s\n", format(ti, big.mark=",")),
       "------------------------------------\n","[ STATUS ] >> COMPLETE ✓")
   })
+  output$loan_chart <- renderPlot(bg = "#0f0f1e", {
+  req(input$calc_loan)
+  p <- input$l_principal; r <- input$l_rate; y <- as.integer(input$l_years)
+  if (is.na(p) || is.na(r) || is.na(y)) return(NULL)
+
+  schedule <- build_amortization_schedule(p, r, y)
+
+  ggplot(schedule, aes(x = Month, y = Balance)) +
+    geom_line(color = "#44ff99", linewidth = 1.2) +
+    geom_area(fill = "#44ff99", alpha = 0.08) +
+    scale_y_continuous(labels = dollar) +
+    labs(title = "[ BALANCE OVER TIME ]", x = "Month", y = "Balance ($)") +
+    theme_minimal() +
+    theme(
+      plot.background   = element_rect(fill = "#0f0f1e", color = NA),
+      panel.background  = element_rect(fill = "#0f0f1e", color = NA),
+      panel.grid.major  = element_line(color = "#2a2a55", linewidth = 0.4),
+      panel.grid.minor  = element_blank(),
+      plot.title        = element_text(color = "#44ff99", family = "mono", size = 12, hjust = 0),
+      axis.text         = element_text(color = "#7766bb", family = "mono"),
+      axis.title        = element_text(color = "#7766bb", family = "mono"),
+      axis.line         = element_line(color = "#2a2a55")
+    )
+})
 
   output$savings_result <- renderText({
     req(input$calc_savings)
@@ -660,6 +688,36 @@ server <- function(input, output, session) {
       sprintf("  INTEREST EARNED  : $%s\n",   format(earned,  nsmall=2, big.mark=",")),
       "------------------------------------\n","[ STATUS ] >> COMPLETE ✓")
   })
+  output$savings_chart <- renderPlot(bg = "#0f0f1e", {
+  req(input$calc_savings)
+  p       <- input$s_principal; r <- input$s_rate; y <- as.integer(input$s_years)
+  contrib <- if (is.na(input$s_contribution)) 0 else input$s_contribution
+  if (is.na(p) || is.na(r) || is.na(y)) return(NULL)
+
+  schedule <- build_savings_schedule(p, r, y, contrib)
+
+  ggplot(schedule, aes(x = Year)) +
+    geom_line(aes(y = Balance,           color = "Final Balance"),     linewidth = 1.2) +
+    geom_line(aes(y = Total_Contributed, color = "Total Contributed"), linewidth = 1.2, linetype = "dashed") +
+    geom_area(aes(y = Balance), fill = "#44ff99", alpha = 0.06) +
+    scale_color_manual(values = c("Final Balance" = "#44ff99", "Total Contributed" = "#7755ff")) +
+    scale_y_continuous(labels = dollar) +
+    labs(title = "[ SAVINGS GROWTH ]", x = "Year", y = "Amount ($)", color = NULL) +
+    theme_minimal() +
+    theme(
+      plot.background   = element_rect(fill = "#0f0f1e", color = NA),
+      panel.background  = element_rect(fill = "#0f0f1e", color = NA),
+      panel.grid.major  = element_line(color = "#2a2a55", linewidth = 0.4),
+      panel.grid.minor  = element_blank(),
+      plot.title        = element_text(color = "#44ff99", family = "mono", size = 12, hjust = 0),
+      axis.text         = element_text(color = "#7766bb", family = "mono"),
+      axis.title        = element_text(color = "#7766bb", family = "mono"),
+      axis.line         = element_line(color = "#2a2a55"),
+      legend.background = element_rect(fill = "#0f0f1e", color = NA),
+      legend.text       = element_text(color = "#c8c8ff", family = "mono"),
+      legend.key        = element_rect(fill = "#0f0f1e", color = NA)
+    )
+})
 
 
   # ── PORTFOLIO ────────────────────────────────────────────
