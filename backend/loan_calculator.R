@@ -45,9 +45,9 @@ for (i in 1:n) {
   # 6. append principal to principal_vec
     principal_vec <- c(principal_vec, principal_portion)
   # 7. append interest to interest_vec
-    interest_vec <- c(interest_vec, interest_portion)
+    interest_vec <- c(interest_vec, round(interest_portion, 2))
   # 8. append balance to balance_vec
-    balance_vec <- c(balance_vec, balance)
+    balance_vec <- c(balance_vec, round(balance, 2))
 }
 
 schedule <- data.frame(
